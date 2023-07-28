@@ -1,0 +1,159 @@
+<강의 17화>
+이 강의에서는 사용자 정의 자료형인 class를 포함해 struct와 enum의 개념을 설명합니다.
+다음 강의 18화에서 종종 언급되는 만큼 꼭 영상을 보며 이해해보시길 바랍니다.
+이 내용에 대한 문제를 제작하는 과정에서 개념의 혼돈을 발생시킬 가능성이 있었기에 오해의 가능성을 줄이고자 따로 과제를 내지는 않았습니다.
+그러나 상당히 중요한 내용이고 이해하기 어렵다고 느껴질 수 있으므로 여러번 시청하는 것을 추천합니다.
+
+<강의 18 ~ 19화>
+다음은 강의에서 작성한 TextRPG입니다.
+강의를 시청하며 다음 코드를 실행시켜보세요.
+그리고 각 부분이 어떤 역할을 하는지와 실행 순서를 주석으로 달아보세요.
+(주석은 //를 사용해 작성하세요.)
+
+
+class Player  //플레이어 설정
+{
+    int AT = 10;
+    int HP = 50;
+    int MAXHP = 100;
+
+    public void PrintHp()  //HP보여주는 함수
+    {
+        Console.WriteLine("");
+        Console.Write("현재 플레이어의 HP는 ");
+        Console.Write(HP);
+        Console.WriteLine("입니다.");
+        Console.ReadKey();
+    }
+    public void MaxHeal()    //HP 회복 함수
+    {
+        if (HP >= MAXHP) //풀 HP이면 문장 띄우기
+        {
+            Console.WriteLine("");
+            Console.WriteLine("체력이 모두 회복되어있어 회복할 필요가 없습니다.");
+            Console.ReadKey();
+        }
+        else //풀 hp 아니면 회복
+        {
+            HP = MAXHP;
+            PrintHp();
+        }
+        return;
+    }
+
+    public void StatusRender() //스텟 표기 함수
+    {
+        Console.WriteLine("-------------------------------------------------");
+        Console.Write("공격력 : ");
+        Console.WriteLine(AT);
+
+        Console.Write("체력 : ");
+        Console.Write(HP);
+        Console.Write("/");
+        Console.WriteLine(MAXHP);
+        Console.WriteLine("-------------------------------------------------");
+
+
+    }
+}
+class Monster
+{
+
+}
+
+enum STARTSELECT
+{
+    SELECTTOWN,
+    SELECTBATTLE,
+    NONSELECT,
+}
+
+
+internal class Program
+{
+    static STARTSELECT StartSelect() //게임시작 함수
+    {
+
+         // 마을과 사냥 정하기
+        Console.Clear();
+        Console.WriteLine("1. 마을");
+        Console.WriteLine("2. 배틀");
+        Console.WriteLine("어디로 가시겠습니까?");
+
+        ConsoleKeyInfo CKI = Console.ReadKey();
+
+        Console.WriteLine("");
+
+        switch (CKI.Key) // 1번, 2번, 다른 키가 눌렸을 때 조건 
+        {
+            case ConsoleKey.D1:
+                Console.WriteLine("마을로 이동합니다.");
+                Console.ReadKey();
+                return STARTSELECT.SELECTTOWN;
+            case ConsoleKey.D2:
+                Console.WriteLine("배틀을 시작합니다.");
+                Console.ReadKey();
+                return STARTSELECT.SELECTBATTLE;
+            default:
+                Console.WriteLine("잘못된 선택입니다.");
+                Console.ReadKey();
+                return STARTSELECT.NONSELECT;
+        }
+
+    }
+
+    static void Town(Player _Player) //마을 static 함수
+    {
+        while (true)
+        {
+            Console.Clear();
+            _Player.StatusRender();
+            Console.WriteLine("마을에서 무슨 일을 하시겠습니까?");
+            Console.WriteLine("1. 체력을 회복한다.");
+            Console.WriteLine("2. 무기를 강화한다.");
+            Console.WriteLine("3. 마을을 나간다.");
+
+            switch (Console.ReadKey().Key)
+            {
+                case ConsoleKey.D1:
+                    _Player.MaxHeal(); // 체력회복 함수
+                    break;
+                case ConsoleKey.D2: 
+                    break;
+                case ConsoleKey.D3:  // 마을 함수 끝
+                    return;
+            }
+        }
+    }
+
+    static void Battle() // 문장 띄우고 어떤 키를 누르면 함수 종료
+    {
+        Console.WriteLine(""); 
+        Console.WriteLine("아직 개장하지 않았습니다.");
+        Console.ReadKey(); 
+    }
+
+    private static void Main(string[] args) 
+    {
+
+        Player NewPlayer = new Player(); // 플레이어 지정
+
+
+        while (true)
+        {
+
+            STARTSELECT SelectCheck = StartSelect(); //시작 
+
+            switch (SelectCheck)
+            {
+                case STARTSELECT.SELECTTOWN: // 마을 선택 마을 함수
+                    Town(NewPlayer);
+                    break;
+                case STARTSELECT.SELECTBATTLE: // 배틀선텍 배틀함수
+                    Battle();
+                    break;
+            }
+        }
+
+    }
+}
